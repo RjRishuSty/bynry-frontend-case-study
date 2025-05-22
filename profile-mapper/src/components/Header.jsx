@@ -3,20 +3,34 @@ import {
   AppBar,
   Box,
   CssBaseline,
-  IconButton,
   Toolbar,
   Button,
   useMediaQuery,
+  Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import Person3Icon from "@mui/icons-material/Person3";
-import LogoutIcon from "@mui/icons-material/Logout";
 import Logo from "./Logo";
 import AppMode from "./AppMode";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Header = ({ mode, toggleMode }) => {
+  const location = useLocation();
+
   const miniLaptop = useMediaQuery("(max-width:1024px)");
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery("(max-width:500px)");
+  const admin = location.pathname === "/admin";
+
+  const menuLinks = [
+    { id: "home", label: "Home", icon: "" },
+    { id: "dashboard", label: "Dashboard", icon: "" },
+  ];
+  // Filtered menu options
+  const filteredLinks = {
+    admin: menuLinks.filter((link) => link.id !== "home"),
+    home: menuLinks.filter((link) => link.id === "home"),
+  };
+
+  const navItems = admin ? filteredLinks.admin : filteredLinks.home;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -31,42 +45,48 @@ const Header = ({ mode, toggleMode }) => {
       >
         <Toolbar>
           <Logo />
-          <Box sx={{ mr: miniLaptop ? 0 : 5, px: miniLaptop ? 0 : 3, }}>
-            {!isMobile ? <>
-              <Button
-                // component={Link}
-                to="/profile"
-                variant="contained"
-                size="medium"
-                sx={{ mr: 2, color: "text.default", backgroundColor: 'custom.buttonBackground' }}
-                startIcon={
-                  <Person3Icon fontSize="medium" />
-                }
-              >
-                Profile
-              </Button>
-              <Button
-                // onClick={handlerLogout}
-                variant="contained"
-                size="medium"
-                sx={{ mr: 2, color: "text.default", backgroundColor: 'custom.buttonBackground' }}
-                endIcon={
-                  <LogoutIcon fontSize="medium" />
-                }
-              >
-                Logout
-              </Button>
-            </> : null}
+          {!isMobile
+            ? navItems.map((link) => (
+                <Typography
+                  key={link.id}
+                  component={NavLink}
+                  to={admin ? "/admin" : `/`}
+                  variant="body1"
+                  sx={{
+                    mr: 4,
+                    textDecoration: "none",
+                    "&.active": {
+                      color: "custom.linkMain",
+                    },
+                    "&:not(.active)": {
+                      color: "text.primary",
+                    },
+                  }}
+                >
+                  {link.label}
+                </Typography>
+              ))
+            : ""}
+
+          <Box sx={{ mr: miniLaptop ? 0 : 2 }}>
+            <Button
+              component={Link}
+              to={admin ? "/" : "/admin"}
+              variant="contained"
+              size="medium"
+              sx={{
+                mr: 2,
+                color: "text.default",
+                backgroundColor: "custom.buttonBackground",
+                fontWeight: 600,
+                textTransform: "capitalize",
+              }}
+              startIcon={<Person3Icon fontSize="medium" />}
+            >
+              {admin ? "Home" : "Admin"}
+            </Button>
             <AppMode mode={mode} toggleMode={toggleMode} />
           </Box>
-          {/* <AppMode /> */}
-          <IconButton
-            color="inherit"
-            edge="end"
-            sx={{  display: { sm: "none" } }}
-          >
-            <MenuIcon fontSize="large" />
-          </IconButton>
         </Toolbar>
       </AppBar>
     </Box>

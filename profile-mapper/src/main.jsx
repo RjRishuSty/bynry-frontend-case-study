@@ -5,6 +5,7 @@ import App from './App.jsx';
 import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
