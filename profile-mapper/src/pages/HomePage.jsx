@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Box, Grid, Typography, Stack, useMediaQuery } from "@mui/material";
 import ProfileCard from "../components/ProfileCard";
 import MapView from "../components/MapView";
@@ -12,9 +12,15 @@ const HomePage = () => {
   const userData = useSelector((state) => state.users.userData);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
-  const handleSummaryClick = (profile) => setSelectedProfile(profile);
-  const handleViewDetails = (profile) => setSelectedProfile(profile);
+  const handleSummaryClick = useCallback(
+  (profile) => setSelectedProfile(profile),
+  []
+);
 
+const handleViewDetails = useCallback(
+  (profile) => setSelectedProfile(profile),
+  []
+);
   return (
     <Stack sx={{ mt: 15 }}>
       <Box>
@@ -46,15 +52,15 @@ const HomePage = () => {
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Box> 
 
         {selectedProfile && (
-          <Box sx={{ border: "3px solid red", mt: 5 }}>
+          <Box sx={{ mt: 5 }}>
             <Grid container spacing={2}>
               <Grid
                 size={{ xs: 12, sm: 12, md: 12, lg: 3 }}
                 sx={{
-                  border: "3px solid blue",
+                  // border: "3px solid blue",
                   p:{md:4},
                   order: { xs: 2, sm: 2, md: 2, lg: 1 },
                 }} 
@@ -64,12 +70,12 @@ const HomePage = () => {
               <Grid
                 size={{ xs: 12, sm: 12, md: 12, lg: 9 }}
                 sx={{
-                  border: "3px solid blue",
+                  // border: "3px solid blue",
                   order: { xs: 1, sm: 1, md: 1, lg: 2 },
                 }}
               >
                 <MapView
-                  location={selectedProfile.location}
+                  selectedProfile={selectedProfile}
                   label={`📍 ${selectedProfile.fullName}'s location`}
                 />
               </Grid>

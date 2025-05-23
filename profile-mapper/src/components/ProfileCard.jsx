@@ -118,16 +118,10 @@ const ProfileCard = ({ profile, onSummaryClick, onViewDetails, useIn }) => {
         </Typography>
         {isInMap ? (
           <Box sx={{ mt: 3 }}>
-            <Typography>
+            {/* <Typography>
               <strong>Contact:</strong> {profile.email}
-            </Typography>
-            {profile.hobbies?.split(",").map((hobby) => (
-              <Chip
-                key={hobby.trim()}
-                label={hobby.trim()}
-                sx={{ mr: 1, mb: 1 }}
-              />
-            ))}
+            </Typography> */}
+           
           </Box>
         ) : null}
 

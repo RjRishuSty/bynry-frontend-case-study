@@ -9,8 +9,6 @@ export const dummyUsers = [
     state: "California",
     city: "Los Angeles",
     email: "alice.johnson@example.com",
-    phone: "+1 555 123 4567",
-    hobbies: "Hiking, Painting, Reading",
   },
   {
     id: "u2",
@@ -22,8 +20,6 @@ export const dummyUsers = [
     state: "Karnataka",
     city: "Bengaluru",
     email: "ravi.kumar@example.in",
-    phone: "+91 98765 43210",
-    hobbies: "Gaming, Biking, Cooking",
   },
   {
     id: "u3",
@@ -35,8 +31,6 @@ export const dummyUsers = [
     state: "Ontario",
     city: "Toronto",
     email: "emma.smith@example.ca",
-    phone: "+1 416 123 7890",
-    hobbies: "Photography, Yoga, Travel",
   },
   {
     id: "u4",
@@ -48,7 +42,5 @@ export const dummyUsers = [
     state: "Jalisco",
     city: "Guadalajara",
     email: "carlos.mendez@example.mx",
-    phone: "+52 33 1234 5678",
-    hobbies: "Coding, Soccer, Music",
   }
 ];
