@@ -2,6 +2,8 @@
 
 A responsive and user-friendly React application to display, manage, and explore user profiles with integrated mapping features using external map services.
 
+🚧 Work in Progress:
+This project is currently under active development. Features are being iteratively added and refined to enhance functionality, performance, and user experience.
 ---
 
 ## 🛠️ Tech Stack
