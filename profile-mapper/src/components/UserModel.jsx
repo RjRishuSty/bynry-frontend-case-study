@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,6 +11,9 @@ import {
   Select,
   MenuItem,
   Grid,
+  Box,
+  Avatar,
+  Autocomplete,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,19 +22,29 @@ import {
   updateUser,
 } from "../store/slice/users.slice";
 import { formFields } from "../services/formFields";
+import { allItemsCenter } from "../../custom-styles";
+import axios from "axios";
+// import { enqueueSnackbar } from "notistack";
 
 const UserModal = () => {
   const isModelOpen = useSelector((state) => state.users.isModel);
   const selectedUser = useSelector((state) => state.users.selectedUser);
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-
+  const [profilePicture, setProfilePicture] = useState(null);
+  const inputRef = useRef(null);
+  const [searchText, setSearchText] = useState({
+    country: "",
+    state: "",
+    city: "",
+  });
   const [formData, setFormData] = useState({
     fullName: "",
-    profilePic: null,
     description: "",
     country: "",
     state: "",
@@ -39,73 +52,107 @@ const UserModal = () => {
     email: "",
   });
 
+  const handleSetProfilePic = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  // TODO: THis Handle change only file fields................
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(file);
+    }
+  };
+
+  // TODO: THis handler fetch api base on inputs fields...................
+  const handleSearchChange = (fieldName) => (value) => {
+    setSearchText((prev) => ({ ...prev, [fieldName]: value }));
+  };
+
+  // TODO: Fetch COUNTRY data useing axios.......................
   useEffect(() => {
-    fetch("https://countriesnow.space/api/v0.1/countries")
-      .then((res) => res.json())
-      .then((data) => {
-        setCountries(data.data.map((c) => c.country));
-      });
+    const fetchCountryData = async () => {
+      try {
+        //* Here manage loading and show message means(error) data..........
+        setMsg("...Loading Countries");
+        setLoading(true);
+        const response = await axios.get(
+          `https://countriesnow.space/api/v0.1/countries`
+        );
+        setCountries(response.data.data.map((item) => item.country));
+      } catch (e) {
+        console.log(e.message);
+      } finally {
+        setLoading(false);
+        setMsg("");
+      }
+    };
+    fetchCountryData();
   }, []);
 
+  // TODO: Fetch STATE data if COUNTRY is Slected ...............................
   useEffect(() => {
-    if (formData.country) {
-      fetch("https://countriesnow.space/api/v0.1/countries/states", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ country: formData.country }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setStates(data.data?.states?.map((s) => s.name) || []);
-          setCities([]);
-          setFormData((prev) => ({
-            ...prev,
-            state: "",
-            city: "",
-          }));
-        });
-    } else {
-      setStates([]);
-      setCities([]);
-      setFormData((prev) => ({
-        ...prev,
-        state: "",
-        city: "",
-      }));
-    }
-  }, [formData.country]);
+    if (!formData.country) return;
+    const fetchStateData = async () => {
+      try {
+        //* Here manage loading and show message means(error) data..........
+        setMsg("...Loading State");
+        setLoading(true);
+        const response = await axios.post(
+          "https://countriesnow.space/api/v0.1/countries/states",
+          { country: formData.country }
+        );
 
+        const statesList =
+          response.data?.data?.states?.map((state) => state.name) || [];
+        setStates(statesList);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      } finally {
+        setLoading(false);
+        setMsg("");
+      }
+    };
+    fetchStateData();
+  }, [formData.country]);
+  useEffect(() => {}, [formData.state]);
+
+  // TODO: Fetch CITY Data base on STATE and COUNTRY.................
   useEffect(() => {
+    const fetchCityData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.post(
+          "https://countriesnow.space/api/v0.1/countries/state/cities",
+          {
+            country: formData.country,
+            state: formData.state,
+          }
+        );
+
+        setCities(response.data?.data || []);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (formData.country && formData.state) {
-      fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          country: formData.country,
-          state: formData.state,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setCities(data.data || []);
-          setFormData((prev) => ({ ...prev, city: "" }));
-        });
-    } else {
-      setCities([]);
-      setFormData((prev) => ({ ...prev, city: "" }));
+      fetchCityData();
     }
   }, [formData.state, formData.country]);
 
+  // TODO: THis useEffect work only when user is selected then set selected data other wise empty.................
   useEffect(() => {
     if (selectedUser) {
       setFormData({
         ...selectedUser,
-        profilePic: null, // Reset file input
       });
     } else {
       setFormData({
         fullName: "",
-        profilePic: null,
         description: "",
         country: "",
         state: "",
@@ -115,28 +162,57 @@ const UserModal = () => {
     }
   }, [selectedUser]);
 
+  // TODO: THis Handle take data like text not photo ..............
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
+  // TODO: THis Handle close the Model Form.................
   const handleClose = () => {
     dispatch(handlerCloseModel());
   };
 
-  const handleSubmit = (e) => {
+  // TODO: THis Handle submit the user Form  and if selected user then update the user.................
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedUser) {
-      dispatch(updateUser(formData));
-    } else {
-      dispatch(addUser({ ...formData, id: Date.now().toString() }));
+
+    let uploadedImageUrl = null;
+
+    //* Upload image to Cloudinary if profilePicture exists...............
+    if (profilePicture) {
+      const formDataUpload = new FormData();
+      formDataUpload.append("file", profilePicture);
+      formDataUpload.append("upload_preset", "unsigned_preset");
+      formDataUpload.append("cloud_name", "dzdv0wfep");
+
+      try {
+        const response = await axios.post(
+          "https://api.cloudinary.com/v1_1/dzdv0wfep/image/upload",
+          formDataUpload
+        );
+        uploadedImageUrl = response.data.secure_url;
+      } catch (error) {
+        console.log("error in upload Image", error.message);
+      }
     }
+
+    //* Now  final data object
+    const newUserData = {
+      ...formData,
+      profilePic: uploadedImageUrl,
+      id: selectedUser ? formData.id : Date.now().toString(), //! set id in user object
+    };
+
+    //* Dispatch action ...................
+    if (selectedUser) {
+      dispatch(updateUser(newUserData));
+    } else {
+      dispatch(addUser(newUserData));
+    }
+
     dispatch(handlerCloseModel());
   };
 
+  console.log(formData);
   return (
     <Dialog
       open={isModelOpen}
@@ -149,55 +225,100 @@ const UserModal = () => {
       <DialogTitle>{selectedUser ? "Edit User" : "Add New User"}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 5 }}>
-          {formFields.map((field) => (
-            <Grid size={{ xs: 12, sm: 12, md: 6 }} key={field.name}>
+          {formFields.map((field, index) => (
+            <Grid size={{ xs: 12, sm: 12, md: 6 }} key={index}>
               {field.type === "file" ? (
                 <>
-                  <Button variant="outlined" component="label" fullWidth>
-                    {formData.profilePic?.name || "Upload Profile Pic"}
+                  <Button
+                    variant="outlined"
+                    component="div"
+                    fullWidth
+                    onClick={handleSetProfilePic}
+                    sx={{ color: "text.primary", textTransform: "capitalize" }}
+                  >
+                    {profilePicture?.name || "Upload Profile Picture"}
                     <input
                       type="file"
-                      name={field.name}
+                      ref={inputRef}
+                      name="profilePic"
                       hidden
-                      onChange={handleChange}
+                      onChange={handleImageChange}
                     />
                   </Button>
-                  {formData.profilePic && (
-                    <small style={{ display: "block", marginTop: 5 }}>
-                      {formData.profilePic.name}
-                    </small>
-                  )}
                 </>
               ) : field.type === "select" ? (
-                <FormControl fullWidth size="small">
-                  <InputLabel id={`${field.name}-label`}>
-                    {field.label}
-                  </InputLabel>
-                  <Select
-                    labelId={`${field.name}-label`}
-                    name={field.name}
-                    value={formData[field.name] || ""}
-                    label={field.label}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {(field.name === "country"
+                <Autocomplete
+                  options={
+                    field.name === "country"
                       ? countries
                       : field.name === "state"
-                      ? states
+                      ? formData.country
+                        ? states
+                        : []
                       : field.name === "city"
-                      ? cities
+                      ? formData.state
+                        ? cities
+                        : []
                       : []
-                    ).map((opt) => (
-                      <MenuItem key={opt} value={opt}>
-                        {opt}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              ) : (
+                  }
+                  value={formData[field.name] || ""}
+                  onChange={(e, newValue) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      [field.name]: newValue,
+                      ...(field.name === "country" && { state: "", city: "" }),
+                      ...(field.name === "state" && { city: "" }),
+                    }));
+                  }}
+                  onInputChange={(e, value) => {
+                    if (e && e.type === "change") {
+                      handleSearchChange(field.name)(value);
+                    }
+                  }}
+                  inputValue={
+                    field.name === "country"
+                      ? formData.country
+                        ? formData.country
+                        : searchText.country
+                      : field.name === "state"
+                      ? formData.state
+                        ? formData.state
+                        : searchText.state
+                      : field.name === "city"
+                      ? formData.city
+                        ? formData.city
+                        : searchText.city
+                      : ""
+                  }
+                  loading={loading && field.name === "country"}
+                  noOptionsText={
+                    field.name === "country"
+                      ? loading
+                        ? msg
+                        : "No matching country"
+                      : field.name === "state"
+                      ? !formData.country
+                        ? "Please select a country first"
+                        : "No matching state"
+                      : field.name === "city"
+                      ? !formData.state
+                        ? "Please select a state first"
+                        : "No matching city"
+                      : "No options"
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={field.label}
+                      size="small"
+                      fullWidth
+                      placeholder={`Search ${field.label}`}
+                    />
+                  )}
+                />
+              ) : field.type === "textarea" ||
+                field.type === "text" ||
+                field.type === "email" ? (
                 <TextField
                   name={field.name}
                   label={field.label}
@@ -209,6 +330,28 @@ const UserModal = () => {
                   fullWidth
                   size="small"
                 />
+              ) : (
+                profilePicture && (
+                  <Grid
+                    size={{ xs: 12, sm: 12, md: 12 }}
+                    sx={{ ...allItemsCenter }}
+                  >
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={
+                        profilePicture
+                          ? URL.createObjectURL(profilePicture)
+                          : ""
+                      }
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                    />
+                  </Grid>
+                )
               )}
             </Grid>
           ))}

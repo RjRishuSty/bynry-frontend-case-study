@@ -6,14 +6,14 @@ const setAppMode = (mode) => ({
     background: {
       default: mode === 'light' ? "#ffffff" : '#17153B', // Body background
       paper: mode === 'light' ? '#fff9e6' : '#2E236C',
-      primary:mode === 'light' ? '#6a4dff' : '#A53860',
+      primary:mode === 'light' ? '#6a4dff' : '#fff9e6',
     },
     primary: {
       main: mode === 'light' ? "#A0C878" : "#C8ACD6",
       contrastText: mode === 'light' ? "#121212" : '#fff',
     },
     text: {
-      optional:'#fff',
+      optional:mode=== 'light'?'#fff':'#000',
       primary: mode === 'light' ? "#121212" : '#ffff',
       secondary: mode === 'light' ? "#4F4F4F" : '#f2f2f2',
     },

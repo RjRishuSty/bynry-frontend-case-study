@@ -14,48 +14,50 @@ import { deleteUser, setSelectedUser } from "../store/slice/users.slice";
 
 export default function UsersTable() {
   const userData = useSelector((state) => state.users.userData);
-
   const dispatch = useDispatch();
+  const tableHead = [
+    { lable: "Si" },
+    { lable: "Full Name" },
+    { lable: "Email" },
+    { lable: "Location" },
+    { lable: "Actions" },
+  ];
   return (
     <TableContainer
       component={Paper}
-      sx={{ mt: 1, backgroundColor: "background.default", py: 3, px: 2, border:'none', boxShadow:'none' }}
+      sx={{
+        mt: 1,
+        backgroundColor: "background.default",
+        py: 3,
+        px: 2,
+        border: "none",
+        boxShadow: "none",
+      }}
     >
       <Table sx={{ minWidth: 650 }} aria-label="user table">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontWeight: 600, textTransform: "uppercase" }}>
-              Full Name
-            </TableCell>
-            <TableCell sx={{ fontWeight: 600, textTransform: "uppercase" }}>
-              Email
-            </TableCell>
-            <TableCell sx={{ fontWeight: 600, textTransform: "uppercase" }}>
-              Location
-            </TableCell>
-            <TableCell sx={{ fontWeight: 600, textTransform: "uppercase" }}>
-              Actions
-            </TableCell>
+            {tableHead.map((item,index) => (
+              <TableCell key={index} sx={{ fontWeight: 600, textTransform: "uppercase" }}>
+                {item.lable}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {userData.map((user,index) => (
+          {userData.map((user, index) => (
             <TableRow
               key={user.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0},backgroundColor: index % 2 === 0 ? "primary.main" : "",
-                    color: "#fff",  }}
+              sx={{
+                "&:last-child td, &:last-child th": { border: "none" },
+                backgroundColor: index % 2 === 0 ? "background.paper" : "",
+                color: "#fff",
+              }}
             >
-              {[
-                { value: user.fullName, color: "red" },
-                { value: user.email, color: "green" },
-                {/* { value: user.location.state, color: "red" }, */}
-              ].map((cell, index) => (
-                <TableCell
-                  key={index}
-                >
-                  {cell.value}
-                </TableCell>
-              ))}
+              <TableCell >{index+1}</TableCell>
+              <TableCell >{user.fullName}</TableCell>
+              <TableCell >{user.email}</TableCell>
+              <TableCell >{user.country}</TableCell>
               <TableCell>
                 <IconButton onClick={() => dispatch(setSelectedUser(user))}>
                   <EditDocumentIcon />
