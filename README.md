@@ -1,61 +1,83 @@
-# bynry-frontend-case-study
+# 🌐 Profile Mapper
 
-A responsive and user-friendly React application to display, manage, and explore user profiles with integrated mapping features using external map services.
+**Profile Mapper** is an interactive and responsive web application that allows companies to manage and visualize employee profiles with map integration.
 
-# 🚧 Work in Progress:
-This project is currently under active development. Features are being iteratively added and refined to enhance functionality, performance, and user experience.
+## 📝 Description
+
+Profile Mapper is designed for companies to monitor and manage their team members effectively. The homepage showcases all employees in card format. Each card includes:
+
+- A **"Summary"** button – shows basic info like name, email, location, and description.
+- A **"View Details"** button – opens a detailed view including all profile information and a live **map location** using Leaflet.
+
+The app also includes an **Admin Panel** where authorized users can **add**, **edit**, or **delete** employee profiles. Users can switch between **light and dark themes** for a personalized experience.
+
+---
+
+## 🚀 Live Demo
+
+🔗 [Visit the App on Vercel](https://bynry-frontend-case-study-ten.vercel.app/)
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React.js
-- **State Management:** Redux Toolkit + React Redux
-- **Routing:** React Router DOM
-- **HTTP Requests:** Axios
-- **Mapping:** Leaflet + React Leaflet + MapTiler
-- **UI Framework:** Material-UI (MUI)
-- **Deployment:** (Specify if deployed)
+- **Frontend**: React.js
+- **UI Framework**: Material UI with Icons
+- **Styling**: Emotion + Fontsource (Nunito)
+- **State Management**: Redux Toolkit + React Redux
+- **Routing**: React Router DOM
+- **HTTP Requests**: Axios
+- **Mapping**: Leaflet + React Leaflet + MapTiler
+- **Notifications**: Notistack
+- **Deployment**: Vercel
 
 ---
 
 ## 🔑 Key Features
 
-### 1. Profile Display
-- List of user profiles showing name, photo, and short description using styled cards.
+1. **Profile Display**  
+   Clean, card-based display of employee profiles with name, photo, and short description.
 
-### 2. Interactive Mapping
-- Interactive maps integrated using **Leaflet** and **MapTiler**.
-- Dynamically displays user addresses.
+2. **Interactive Mapping**  
+   Live maps integrated with Leaflet and MapTiler to pinpoint user addresses.
 
-### 3. Summary Button with Map
-- Each profile includes a "Summary" button.
-- On click, the map opens with a marker for the selected address.
+3. **Summary Button with Map**  
+   Opens basic info and map view for each profile.
 
-### 4. Admin Panel (Profile Management)
-- Add, edit, or delete profiles via an admin dashboard.
-- Utilizes Redux Toolkit for state updates.
+4. **Admin Panel (Profile Management)**  
+   Admin can add, update, or delete employee profiles.
 
-### 5. Search and Filter
-- Search and filter profiles by name, location, or other parameters.
+5. **Search and Filter**  
+   Search by name, location, or other criteria.
 
-### 6. Profile Details View
-- Click a profile to open a detailed view with full info including contact and interests.
+6. **Profile Details View**  
+   Full profile info including address, contact, and more.
 
-### 7. Responsive Design
-- Fully mobile-optimized and responsive for all device sizes.
+7. **Dark Mode / Light Mode**  
+   Theme toggle for a customizable UI.
 
-### 8. Error Handling
-- Graceful handling of invalid addresses and API/map errors.
+8. **Responsive Design**  
+   Optimized for all devices and screen sizes.
 
-### 9. Loading Indicators
-- Spinners and progress bars provide feedback during data loading and map rendering.
+9. **Error Handling**  
+   Graceful handling of invalid addresses and map/API errors.
+
+10. **Loading Indicators**  
+    Spinners and loaders for seamless user experience.
 
 ---
 
 ## 📦 Installation
 
 ```bash
+# Clone the repository
 git clone https://github.com/RjRishuSty/bynry-frontend-case-study.git
-cd profile-mapper
+
+# Navigate into the directory
+cd bynry-frontend-case-study
+
+# Install dependencies
 npm install
+
+# Start the development server
+npm start
