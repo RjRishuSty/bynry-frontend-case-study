@@ -1,7 +1,7 @@
 export const dummyUsers = [
   {
     id: "u1",
-    fullName: "Alice Johnson",
+    fullName: "Alice",
     profilePic: "https://randomuser.me/api/portraits/women/1.jpg",
     description:
       "Alice is a Frontend Developer at TechSoft, specializing in building responsive and accessible web interfaces. She loves experimenting with new UI frameworks and enhancing user experience.",

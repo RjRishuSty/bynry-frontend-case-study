@@ -38,13 +38,12 @@ const userSlice = createSlice({
       localStorage.setItem("userData", JSON.stringify(state.userData));
     },
     addUser: (state, action) => {
-      console.log("Adding user:", action.payload);
       state.userData.push(action.payload);
       localStorage.setItem("userData", JSON.stringify(state.userData));
     },
     setSelectedUser: (state, action) => {
       state.selectedUser = action.payload;
-      state.isModel = true; // open modal when setting selected user
+      state.isModel = true; 
     },
     updateUser: (state, action) => {
       const index = state.userData.findIndex((u) => u.id === action.payload.id);
