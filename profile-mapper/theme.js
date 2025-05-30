@@ -9,7 +9,7 @@ const setAppMode = (mode) => ({
       primary:mode === 'light' ? '#6a4dff' : '#fff9e6',
     },
     primary: {
-      main: mode === 'light' ? "#A0C878" : "#C8ACD6",
+      main: mode === 'light' ? "#008000" : "#C8ACD6",
       contrastText: mode === 'light' ? "#121212" : '#fff',
     },
     text: {
@@ -22,7 +22,7 @@ const setAppMode = (mode) => ({
       iconBackground: '#6a4dff',
       linkMain: mode === 'light' ? "#6a4dff" : '#fff',
       buttonBackground: mode === 'light' ? "#f1e6c1" : '#17153B',
-      onHover: mode === 'light' ? '#A0C878' : '#584185',
+      onHover: mode === 'light' ? '#008000' : '#584185',
     },
   },
   typography: {

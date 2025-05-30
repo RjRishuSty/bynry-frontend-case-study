@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Grid, Typography, Stack, useMediaQuery } from "@mui/material";
 import ProfileCard from "../components/ProfileCard";
 import MapView from "../components/MapView";
@@ -8,19 +8,24 @@ import { allItemsCenter } from "../../custom-styles";
 const HomePage = () => {
   const miniLaptop = useMediaQuery("(max-width:1010px)");
   const isMobile = useMediaQuery("(max-width:735px)");
-  // const xsSmall = useMediaQuery("(max-width:1300px)");
   const userData = useSelector((state) => state.users.userData);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [userSummary, setUserSummary] = useState(false);
+  const cardRef = useRef(null);
+  useEffect(() => {
+    if (cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [userSummary]);
+  const handleSummaryClick = useCallback((profile) => {
+    setSelectedProfile(profile);
+    setUserSummary(true);
+  }, []);
 
-  const handleSummaryClick = useCallback(
-  (profile) => setSelectedProfile(profile),
-  []
-);
-
-const handleViewDetails = useCallback(
-  (profile) => setSelectedProfile(profile),
-  []
-);
+  const handleViewDetails = useCallback((profile) => {
+    setSelectedProfile(profile);
+    setUserSummary(false);
+  }, []);
   return (
     <Stack sx={{ mt: 15 }}>
       <Box>
@@ -52,31 +57,36 @@ const handleViewDetails = useCallback(
               </Grid>
             ))}
           </Grid>
-        </Box> 
-
-        {selectedProfile && (
-          <Box sx={{ mt: 5 }}>
+        </Box>
+        {userSummary && selectedProfile && (
+          <Box
+            ref={cardRef}
+            sx={{ backgroundColor: "primary.main", py: 10, mt: 5 }}
+          >
             <Grid container spacing={2}>
               <Grid
-                size={{ xs: 12, sm: 12, md: 12, lg: 3 }}
+                size={{ xs: 12, sm: 12, md: 12, lg: 12 }}
                 sx={{
                   // border: "3px solid blue",
-                  p:{md:4},
+                  p: { md: 4 },
                   order: { xs: 2, sm: 2, md: 2, lg: 1 },
-                }} 
-              >
-                <ProfileCard profile={selectedProfile} useIn="inMap" />
-              </Grid>
-              <Grid
-                size={{ xs: 12, sm: 12, md: 12, lg: 9 }}
-                sx={{
-                  // border: "3px solid blue",
-                  order: { xs: 1, sm: 1, md: 1, lg: 2 },
                 }}
               >
+                <ProfileCard profile={selectedProfile} useIn="summary" />
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        {selectedProfile && !userSummary && (
+          <Box sx={{ mt: 5 }}>
+            <Grid container>
+              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
                 <MapView
                   selectedProfile={selectedProfile}
-                  label={`📍 ${selectedProfile.fullName}'s location`}
+                  label={
+                    <ProfileCard profile={selectedProfile} useIn="inMap" />
+                  }
                 />
               </Grid>
             </Grid>

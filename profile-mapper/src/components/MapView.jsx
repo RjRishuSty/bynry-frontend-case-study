@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Container, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import L from "leaflet";
-import PushPinIcon from "@mui/icons-material/PushPin";
+import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
 import { renderToStaticMarkup } from "react-dom/server";
 import mapConfig from "../lib/mapConfig";
 import { geocodeLocation } from "../lib/geocodeLocation";
@@ -24,7 +24,7 @@ const MapUpdater = ({ coords }) => {
 // Custom pin icon
 const redPushPinIcon = L.divIcon({
   html: renderToStaticMarkup(
-    <PushPinIcon style={{ color: "red", fontSize: "32px" }} />
+    <PersonPinCircleIcon style={{ color: "red", fontSize: "3rem" }} />
   ),
   className: "",
   iconAnchor: [16, 32],
@@ -68,9 +68,8 @@ const MapView = ({ selectedProfile, label }) => {
     <Stack
       ref={mapRef}
       sx={{
-        // border: '3px solid black',
-        filter: "brightness(90%)",
-        "&:hover": { filter: "brightness(100%)" },
+        filter: "brightness(100%)",
+        "&:hover": { filter: "brightness(105%)" },
       }}
     >
       <MapContainer
@@ -78,10 +77,8 @@ const MapView = ({ selectedProfile, label }) => {
         zoom={10}
         scrollWheelZoom={false}
         style={{
-          height: "450px",
+          height: "90vh",
           width: "100%",
-          borderRadius: 10,
-          boxShadow: "0px 0px 5px black",
         }}
       >
         <MapUpdater coords={coords} />
@@ -90,7 +87,17 @@ const MapView = ({ selectedProfile, label }) => {
           attribution={mapConfig.maptiler.attribution}
         />
         <Marker position={coords} icon={redPushPinIcon}>
-          <Popup>{label}</Popup>
+          <Popup>
+            <Box
+              sx={{
+                border: "2px solid black",
+                boxShadow: 3,
+                width: "90%",
+              }}
+            >
+              {label}
+            </Box>
+          </Popup>
         </Marker>
       </MapContainer>
     </Stack>

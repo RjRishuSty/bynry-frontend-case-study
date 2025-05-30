@@ -17,3 +17,37 @@ a{
 /* .css-zntjtf-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
     height: 50vh;
 } */
+
+
+
+/* Map Default style */
+/* Set popup width/height */
+.leaflet-popup-content-wrapper {
+  /* border: 2px solid red; */
+  width: 400px !important; /* adjust as needed */
+  height: 150px !important; /* adjust as needed */
+  background-color: rgb(205, 204, 204) !important;
+}
+
+/* Set inner content box padding */
+.leaflet-popup-content {
+  margin: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Increase close icon size */
+.leaflet-popup-close-button {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 25px !important;
+  top: 0px !important;
+  right: 0px !important;
+  color:white !important;
+  background-color: black !important;
+  border-radius: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  /* padding: 1rem !important; */
+}

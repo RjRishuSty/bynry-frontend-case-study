@@ -1,162 +1,132 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
-  CardMedia,
   Typography,
   Button,
   Box,
+  Grid,
+  Container,
 } from "@mui/material";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import InfoIcon from "@mui/icons-material/Info";
-import { allItemsCenter, itemSpacebetween } from "../../custom-styles";
-import OnCardHover from "./OnCardHover";
+import {
+  allItemsCenter,
+  allItemsStart,
+  itemSpacebetween,
+} from "../../custom-styles";
+import UserCardMedia from "./UserCardMedia";
+import UserCardContent from "./UserCardContent";
+import SummaryCardHeader from "./SummaryCardHeader";
 
 const ProfileCard = ({ profile, onSummaryClick, onViewDetails, useIn }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const renderContent = () => {
+    switch (useIn) {
+      case "summary":
+        return (
+          <Container>
+            <Grid container>
+              <Grid
+                size={{ xs: 12, sm: 12, md: 12 }}
+                sx={{
+                  p: 5,
+                  backgroundColor: "text.secondary",
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  ...allItemsStart,
+                }}
+              >
+                <UserCardMedia profile={profile} useIn="summary" />
+                <SummaryCardHeader profile={profile} />
+              </Grid>
+              <Grid
+                size={{ xs: 12, sm: 12, md: 12 }}
+                sx={{
+                  backgroundColor: "background.paper",
+                  p: 2,
+                  borderBottomRightRadius: 5,
+                  borderBottomLeftRadius: 5,
+                }}
+              >
+                <UserCardContent profile={profile} useIn="summary" />
+              </Grid>
+            </Grid>
+          </Container>
+        );
+      case "inMap":
+        return (
+          <Card sx={{ width: "100%", border: "2px solid blue" }}>
+            <UserCardMedia profile={profile} useIn="inMap" />
+            <CardContent sx={{bordeR:'5px solid black'}}>
+              <Typography variant="body1" color="#000">
+                {profile.name}
+              </Typography>
+            </CardContent>
+          </Card>
+        );
+      default:
+        return (
+          <>
+            <UserCardMedia profile={profile} />
+            <CardContent>
+              <UserCardContent profile={profile} useIn="card" />
+              <Box sx={{ mt: 2, ...itemSpacebetween }}>
+                <Button
+                  variant="contained"
+                  onClick={() => onSummaryClick(profile)}
+                  startIcon={<SummarizeIcon />}
+                  sx={{
+                    mt: 1,
+                    color: "text.default",
+                    backgroundColor: "custom.buttonBackground",
+                    fontWeight: 600,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Summary
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => onViewDetails(profile)}
+                  endIcon={<InfoIcon />}
+                  sx={{
+                    mt: 1,
+                    ml: 2,
+                    fontWeight: 600,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  View Details
+                </Button>
+              </Box>
+            </CardContent>
+          </>
+        );
+    }
+  };
 
-  const isInMap = useIn === "inMap";
-  // console.log(profile)
   return (
     <Card
-      onMouseEnter={() => {
-        if (isInMap) setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        if (isInMap) setIsHovered(false);
-      }}
       sx={{
-        // border:'2px solid red',
         cursor: "pointer",
-        // m: isInMap ? 0 : 2,
         ...allItemsCenter,
         flexDirection: "column",
         position: "relative",
         overflow: "hidden",
         transition: "0.3s ease",
-        ...(isInMap
-          ? ""
-          : {
+        backgroundColor: useIn === "summary" ? "transparent" : "",
+        border: useIn === "summary" ? "none" : "",
+        boxShadow: useIn === "summary" ? "none" : "",
+        ...(useIn !== "summary"
+          ? {
               "&:hover": {
-                filter: "brightness(90%)",
+                filter: "brightness(95%)",
               },
-            }),
+            }
+          : {}),
       }}
     >
-      {/* TODO:  Hover Overlay for inMap */}
-      {isInMap && isHovered && <OnCardHover />}
-
-      <Box
-        sx={{
-          backgroundColor: "primary.main",
-          width: "100%",
-          height: "100px",
-          p: 8,
-        }}
-      ></Box>
-
-      <CardMedia
-        component="img"
-        height="250"
-        image={profile.profilePic}
-        alt={profile.fullName}
-        sx={{
-          borderRadius: "100%",
-          border: "5px solid #fff",
-          width: "150px",
-          height: "150px",
-          mt: -10,
-          objectPosition: "center",
-          objectFit: "cover",
-          transition: "transform 0.3s ease",
-          "&:hover": {
-            transform: "scale(1.05)",
-          },
-        }}
-      />
-
-      {/* Card Text */}
-      <CardContent>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            fontWeight: 600,
-            textAlign: "center",
-            textTransform: "uppercase",
-          }}
-        >
-          {profile.fullName}
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ textAlign: isInMap ? "start" : "center" }}
-        >
-          {isInMap ? (
-            profile.description
-          ) : profile.description.length > 45 ? (
-            <>
-              {profile.description.slice(0, 40)}
-              <span
-                style={{
-                  // color: '#6a4dff',
-                  cursor: "pointer",
-                  // fontWeight: 'bold',
-                  marginLeft: "4px",
-                }}
-                // onClick={() => {
-                //   console.log('Learn more clicked');
-                // }}
-              >
-                ...learn more
-              </span>
-            </>
-          ) : (
-            profile.description
-          )}
-        </Typography>
-        {isInMap ? (
-          <Box sx={{ mt: 3 }}>
-            {/* <Typography>
-              <strong>Contact:</strong> {profile.email}
-            </Typography> */}
-           
-          </Box>
-        ) : null}
-
-        {!isInMap && (
-          <Box sx={{ mt: 2, ...itemSpacebetween }}>
-            <Button
-              variant="contained"
-              onClick={() => onSummaryClick(profile)}
-              startIcon={<SummarizeIcon fontSize="medium" />}
-              sx={{
-                mt: 1,
-                color: "text.default",
-                backgroundColor: "custom.buttonBackground",
-                fontWeight: 600,
-                textTransform: "capitalize",
-              }}
-            >
-              Summary
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => onViewDetails(profile)}
-              endIcon={<InfoIcon fontSize="medium" />}
-              sx={{
-                mt: 1,
-                ml: 2,
-                fontWeight: 600,
-                textTransform: "capitalize",
-              }}
-            >
-              View Details
-            </Button>
-          </Box>
-        )}
-      </CardContent>
+      {renderContent()}
     </Card>
   );
 };

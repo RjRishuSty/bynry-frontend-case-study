@@ -11,6 +11,18 @@ export const allItemsStart = {
     alignItems: 'center'
 }
 
+export const allStart = {
+    display: 'flex',
+    justifyContent: 'start',
+    alignItems: 'start'
+}
+
+export const allItemEnd = {
+    display: 'flex',
+    justifyContent: 'end',
+    alignItems: 'center'
+}
+
 
 export const itemSpacebetween = {
     display: 'flex',
