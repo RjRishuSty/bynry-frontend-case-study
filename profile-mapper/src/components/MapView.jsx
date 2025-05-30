@@ -1,14 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Box, Container, Stack } from "@mui/material";
+import {
+  Box,
+  Stack,
+  CircularProgress,
+  Backdrop,
+} from "@mui/material";
 import L from "leaflet";
 import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
 import { renderToStaticMarkup } from "react-dom/server";
 import mapConfig from "../lib/mapConfig";
 import { geocodeLocation } from "../lib/geocodeLocation";
 
-// Helper component to smoothly fly to new coordinates
+// Smoothly fly to new coordinates
 const MapUpdater = ({ coords }) => {
   const map = useMap();
 
@@ -21,7 +32,7 @@ const MapUpdater = ({ coords }) => {
   return null;
 };
 
-// Custom pin icon
+// Custom pushpin icon
 const redPushPinIcon = L.divIcon({
   html: renderToStaticMarkup(
     <PersonPinCircleIcon style={{ color: "red", fontSize: "3rem" }} />
@@ -30,22 +41,25 @@ const redPushPinIcon = L.divIcon({
   iconAnchor: [16, 32],
 });
 
-// Main MapView component
+// Main component
 const MapView = ({ selectedProfile, label }) => {
   const mapRef = useRef();
   const [coords, setCoords] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const defaultCoords = [20.5937, 78.9629]; // Default to center of India or similar
 
-  // Smooth scroll to map view when coordinates update
+  // Smooth scroll into view when new location is shown
   useEffect(() => {
     if (mapRef.current) {
       mapRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [coords]);
 
-  // Geocode location to get lat/lng coordinates
+  // Fetch coordinates when profile changes
   useEffect(() => {
     const fetchCoords = async () => {
       if (selectedProfile) {
+        setLoading(true);
         try {
           const result = await geocodeLocation({
             country: selectedProfile.country,
@@ -55,6 +69,8 @@ const MapView = ({ selectedProfile, label }) => {
           setCoords(result);
         } catch (err) {
           console.error("Failed to geocode location:", err);
+        } finally {
+          setLoading(false);
         }
       }
     };
@@ -62,44 +78,49 @@ const MapView = ({ selectedProfile, label }) => {
     fetchCoords();
   }, [selectedProfile]);
 
-  if (!coords) return null;
-
   return (
     <Stack
       ref={mapRef}
       sx={{
+        position: "relative",
         filter: "brightness(100%)",
         "&:hover": { filter: "brightness(105%)" },
       }}
     >
+      {/* Map Container (always renders fast) */}
       <MapContainer
-        center={coords}
+        center={coords || defaultCoords}
         zoom={10}
         scrollWheelZoom={false}
-        style={{
-          height: "90vh",
-          width: "100%",
-        }}
+        style={{ height: "90vh", width: "100%" }}
       >
-        <MapUpdater coords={coords} />
         <TileLayer
           url={mapConfig.maptiler.url}
           attribution={mapConfig.maptiler.attribution}
         />
-        <Marker position={coords} icon={redPushPinIcon}>
-          <Popup>
-            <Box
-              sx={{
-                border: "2px solid black",
-                boxShadow: 3,
-                width: "90%",
-              }}
-            >
-              {label}
-            </Box>
-          </Popup>
-        </Marker>
+        {coords && <MapUpdater coords={coords} />}
+        {coords && (
+          <Marker position={coords} icon={redPushPinIcon}>
+            <Popup>
+              <Box sx={{ width: "90%" }}>{label}</Box>
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
+
+      {/* Loader Overlay */}
+      {loading && (
+        <Backdrop
+          open
+          sx={{
+            position: "absolute",
+            zIndex: 1000,
+            color: "#fff",
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
     </Stack>
   );
 };

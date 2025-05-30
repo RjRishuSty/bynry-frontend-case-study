@@ -6,11 +6,12 @@ import { allItemEnd } from "../../custom-styles";
 
 const SummaryCardHeader = ({ profile }) => {
   const isTablet = useMediaQuery("(max-width:914px)");
+  const isMobile = useMediaQuery("(max-width:485px)");
   return (
     <>
-      <Box sx={{ width: "100%", px: 3 }}>
+      <Box sx={{ width: "100%", ml:isMobile?2: 3 }}>
         <Typography
-          variant="h4"
+          variant={isMobile?"h5":"h4"}
           gutterBottom
           sx={{
             fontWeight: 600,
@@ -23,7 +24,7 @@ const SummaryCardHeader = ({ profile }) => {
           <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <Button
               variant="contained"
-              size="large"
+              size={isMobile?"small":'large'}
               component="div"
               sx={{
                 backgroundColor: "#ccffcc",
@@ -34,7 +35,7 @@ const SummaryCardHeader = ({ profile }) => {
                 <VerifiedIcon fontSize="large" sx={{ color: "#00cc00" }} />
               }
             >
-              100% Verified
+              {isMobile?"Verified":"100% Verified"}
             </Button>
           </Grid>
           {!isTablet && (

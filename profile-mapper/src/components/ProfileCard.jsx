@@ -20,6 +20,7 @@ import UserCardContent from "./UserCardContent";
 import SummaryCardHeader from "./SummaryCardHeader";
 
 const ProfileCard = ({ profile, onSummaryClick, onViewDetails, useIn }) => {
+  console.log(profile, "in profile card");
   const renderContent = () => {
     switch (useIn) {
       case "summary":
@@ -55,13 +56,11 @@ const ProfileCard = ({ profile, onSummaryClick, onViewDetails, useIn }) => {
         );
       case "inMap":
         return (
-          <Card sx={{ width: "100%", border: "2px solid blue" }}>
+          <Card sx={{border:'none', boxShadow:'none', width: "100%", ...allItemsStart, backgroundColor:'transparent' }}>
             <UserCardMedia profile={profile} useIn="inMap" />
-            <CardContent sx={{bordeR:'5px solid black'}}>
-              <Typography variant="body1" color="#000">
-                {profile.name}
-              </Typography>
-            </CardContent>
+            <Typography variant="body1" sx={{ color: "black", px: 1 }}>
+              {profile.fullName}
+            </Typography>
           </Card>
         );
       default:

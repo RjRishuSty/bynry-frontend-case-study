@@ -6,7 +6,7 @@ const UserCardMedia = ({ profile, useIn }) => {
   const map = useIn === "inMap";
   return (
     <>
-      {!summary ||!map && (
+      {summary || map ?"":(
         <Box
           sx={{
             backgroundColor: "primary.main",

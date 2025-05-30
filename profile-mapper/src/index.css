@@ -24,13 +24,15 @@ a{
 /* Set popup width/height */
 .leaflet-popup-content-wrapper {
   /* border: 2px solid red; */
-  width: 400px !important; /* adjust as needed */
-  height: 150px !important; /* adjust as needed */
+  width:200px !important; /* adjust as needed */
+  height: auto !important; /* adjust as needed */
+      padding-right: 25px !important;
   background-color: rgb(205, 204, 204) !important;
 }
 
 /* Set inner content box padding */
 .leaflet-popup-content {
+  /* border: 3px solid blue !important; */
   margin: 0;
   width: 100% !important;
   height: 100% !important;
